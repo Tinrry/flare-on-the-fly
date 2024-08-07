@@ -1,0 +1,16 @@
+module load conda
+conda activate flare-dev
+
+module load openblas
+python -c "import flare.bffs.sgp._C_flare" 
+
+module load vasp
+export VASP_PP_PATH=/data/projects/vasp/
+python -c "import flare.bffs.sgp._C_flare" 
+
+# mkdir build && cd build
+# cmake ..
+# make -j ** cd ..
+# ln -s build/_C_flare.* flare/bffs/sgp/
+# 
+# pip install -e .

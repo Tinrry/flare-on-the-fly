@@ -1,3 +1,6 @@
+*/offline_ckpt_*/
+boron_offline/
+**/sparse_desc_lmp.flare
 FLARE-Tutorials/*
 .DS_Store
 .vs_code/
