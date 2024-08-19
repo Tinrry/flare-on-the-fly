@@ -32,31 +32,29 @@ config_file = f'{model_dir}/lammps.yaml'
 with open(config_file, 'r') as f:
     config = yaml.safe_load(f)
     otf_config = config["otf"]
+
 super_cell = get_super_cell(config["supercell"])
-dft_calc = get_dft_calc(config["dft_calc"])
+
 
 # predict the energy and force fro structures, 使用方法与ASE相同
 # if we use flare calculator, we must wrap it in OTF, use FLARE_Atoms
 
 from flare.scripts.otf_train import OTF
-from ase.calculators.lammpsrun import LAMMPS
 
+dft_calc = get_dft_calc(config["dft_calc"])
+# wrap the flare Atoms
 otf = OTF(atoms=super_cell, flare_calc=flare_calc, dft_calc=dft_calc, **otf_config)
 
 flare_calc.calculate(atoms=otf.atoms)
 flare_calc_e = flare_calc.results.get('energy', None)
 flare_calc_f = flare_calc.results.get('forces', None)
 flare_calc_s = flare_calc.results.get('stress', None)
+flare_calc_std = flare_calc.results.get('stds', None)
+print(f'flare_calc_e: {flare_calc_e}')      
 
-flare_calc_e_1 = flare_calc.results['energy']
-flare_calc_f_1 = flare_calc.results['forces']
-
-# 在OTF中 atoms 有一个属性，flare results，
-# 这个属性是一个字典，里面存储了energy和forces
-flare_atoms_e = otf.atoms.energy
-print(f'flare_calc_e: {flare_calc_e}')      # -332.18692436639685
-print(f'flare_calc_f: {flare_calc_f}')      # [[ -3.07878154e-01 -1.00920507e-01  2.26388432e-01] ...]
-print(f'flare_calc_s: {flare_calc_s}')      # [-1.16636430e-03 -1.22592367e-03 -3.44829727e-03 -9.08749919e-06 -1.05114523e-04 -3.70648447e-05]
-print(f'flare_calc_e_1: {flare_calc_e_1}')      # -332.18692436639685
-print(f'flare_calc_f_1: {flare_calc_f_1}')      # [[ -3.07878154e-01 -1.00920507e-01  2.26388432e-01] ...]
-print(f'flare_atoms_e: {flare_atoms_e}')        # -332.18692436639685
+dft_calc.calculate(atoms=otf.atoms)
+dft_calc_e = dft_calc.results.get('energy', None)
+dft_calc_f = dft_calc.results.get('forces', None)
+dft_calc_s = dft_calc.results.get('stress', None)
+dft_calc_std = dft_calc.results.get('stds', None)
+print(f'dft_calc_e: {dft_calc_e}')
