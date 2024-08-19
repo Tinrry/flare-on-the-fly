@@ -33,8 +33,21 @@ with open(config_file, 'r') as f:
     config = yaml.safe_load(f)
     otf_config = config["otf"]
 
-super_cell = get_super_cell(config["supercell"])
 
+# super_cell = get_super_cell(config["supercell"])
+from ase.io import iread
+from flare.atoms import FLARE_Atoms
+
+#============== debug ==============
+# get supercell from training data
+ase_traj = iread(f'{model_dir}/training_data.xyz', index=':', format='extxyz')
+print(f'len(ase_traj): {len(ase_traj)}')
+atoms = next(ase_traj)
+print(f'atoms: {atoms}')
+flare_atoms = FLARE_Atoms.from_ase_atoms(atoms)
+print(f'flare_atoms: {flare_atoms}')
+
+#==============
 
 # predict the energy and force fro structures, 使用方法与ASE相同
 # if we use flare calculator, we must wrap it in OTF, use FLARE_Atoms
