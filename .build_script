@@ -1,0 +1,10 @@
+# run it use . .build_script
+. .bashrc && \
+cd /data/hhzheng/flare && \
+rm -rf build && mkdir build && cd build && \
+cmake .. && \
+make -j && \
+cp _C_flare*.so ../flare/bffs/sgp && \
+cd .. && \
+export PYTHONPATH=${PYTHONPATH}:/data/hhzheng/flare && \
+pytest tests/test_sparse_gp.py
